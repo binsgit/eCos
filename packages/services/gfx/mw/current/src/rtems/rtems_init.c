@@ -15,8 +15,8 @@
 //
 // MODIFICATION/HISTORY:
 // $Log$
-// Revision 1.1  2002/05/20 22:25:44  jlarmour
-// Merge from eCos master repository on 2002-05-20-20:11:54-BST
+// Revision 1.2  2002/05/23 23:08:39  jlarmour
+// Merge from eCos master repository on 2002-05-23-21:39:14-BST
 //
 // Revision 1.1.1.1  2001/06/21 06:32:42  greg
 // Microwindows pre8 with patches
