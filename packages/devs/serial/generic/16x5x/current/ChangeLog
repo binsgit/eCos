@@ -1,14 +1,19 @@
 2000-09-18  Jesper Skov  <jskov@redhat.com>
 
-	* src/pid_serial.h: [removed]
-	* src/pid_serial_with_ints.c: [removed] Moved driver to generic
-	16x5x package.
-	* include/arm_arm7_pid_ser.inl: [added] Make use of generic
-	driver.
-	* cdl/ser_arm_pid.cdl: Matching changes.
+	* src/ser_16x5x.c: Allow clients to specify register
+	stepping. Rename a type. Fix compile error.
 
-	* ChangeLog: Cleaned out non-pid entries.
+2000-09-14  Jesper Skov  <jskov@redhat.com>
 
+	* src/ser_16x5x.c: Moved ARM/PID driver to provide generic 16x5x
+	driver. Rewritten to use HAL IO macros. Still needs some polish
+	and configury to properly support all the various target
+	controllers that may only have a partial set of the features.  
+	* cdl/ser_generic_16x5x.cdl: Same.
+
+	* Removed non-PID related ChangeLog entries.
+	
+----------------------------------------------------------------------------
 2000-08-24  Jonathan Larmour  <jlarmour@redhat.co.uk>
 
 	* src/pid_serial_with_ints.c (pid_serial_DSR): Remove accidental
