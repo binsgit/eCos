@@ -1,11 +1,11 @@
-#ifndef CYGONCE_HAL_PLF_STUB_H
-#define CYGONCE_HAL_PLF_STUB_H
+#ifndef CYGONCE_BRUTUS_H
+#define CYGONCE_BRUTUS_H
 
-//=============================================================================
+/*=============================================================================
 //
-//      plf_stub.h
+//      brutus.h
 //
-//      Platform header for GDB stub support.
+//      Platform specific support (registers, etc)
 //
 //=============================================================================
 //####COPYRIGHTBEGIN####
@@ -34,51 +34,17 @@
 //=============================================================================
 //#####DESCRIPTIONBEGIN####
 //
-// Author(s):   jskov
-// Contributors:jskov
-// Date:        1999-02-15
-// Purpose:     Platform HAL stub support for ARM/PID boards.
-// Usage:       #include <cyg/hal/plf_stub.h>
-//              
+// Author(s):    gthomas
+// Contributors: gthomas
+// Date:         2000-05-08
+// Purpose:      Intel SA1110/Brutus platform specific support routines
+// Description: 
+// Usage:        #include <cyg/hal/brutus.h>
+//
 //####DESCRIPTIONEND####
 //
-//=============================================================================
+//===========================================================================*/
 
-#include <pkgconf/hal.h>
-#include <pkgconf/hal_arm_pid.h>
-
-#ifdef CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
-
-#include <cyg/infra/cyg_type.h>         // CYG_UNUSED_PARAM
-
-#include <cyg/hal/arm_stub.h>           // architecture stub support
-
-//----------------------------------------------------------------------------
-// Define some platform specific communication details. This is mostly
-// handled by hal_if now, but we need to make sure the comms tables are
-// properly initialized.
-
-externC void cyg_hal_plf_comms_init(void);
-
-#define HAL_STUB_PLATFORM_INIT_SERIAL()       cyg_hal_plf_comms_init()
-
-#define HAL_STUB_PLATFORM_SET_BAUD_RATE(baud) CYG_UNUSED_PARAM(int, (baud))
-#define HAL_STUB_PLATFORM_INTERRUPTIBLE       0
-#define HAL_STUB_PLATFORM_INIT_BREAK_IRQ()    CYG_EMPTY_STATEMENT
-
-//----------------------------------------------------------------------------
-// Stub initializer.
-#define HAL_STUB_PLATFORM_INIT()              CYG_EMPTY_STATEMENT
-
-#endif // ifdef CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
-
-//----------------------------------------------------------------------------
-// Reset.
-
-#define HAL_STUB_PLATFORM_RESET() CYG_EMPTY_STATEMENT
-
-#define HAL_STUB_PLATFORM_RESET_ENTRY 0x4000000
-
-//-----------------------------------------------------------------------------
-#endif // CYGONCE_HAL_PLF_STUB_H
-// End of plf_stub.h
+/*---------------------------------------------------------------------------*/
+/* end of brutus.h                                                          */
+#endif /* CYGONCE_BRUTUS_H */

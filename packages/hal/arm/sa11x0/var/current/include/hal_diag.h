@@ -1,11 +1,11 @@
-#ifndef CYGONCE_HAL_PLF_STUB_H
-#define CYGONCE_HAL_PLF_STUB_H
+#ifndef CYGONCE_HAL_DIAG_H
+#define CYGONCE_HAL_DIAG_H
 
-//=============================================================================
+/*=============================================================================
 //
-//      plf_stub.h
+//      hal_diag.h
 //
-//      Platform header for GDB stub support.
+//      HAL Support for Kernel Diagnostic Routines
 //
 //=============================================================================
 //####COPYRIGHTBEGIN####
@@ -34,51 +34,47 @@
 //=============================================================================
 //#####DESCRIPTIONBEGIN####
 //
-// Author(s):   jskov
-// Contributors:jskov
-// Date:        1999-02-15
-// Purpose:     Platform HAL stub support for ARM/PID boards.
-// Usage:       #include <cyg/hal/plf_stub.h>
-//              
+// Author(s):    nickg, gthomas
+// Contributors: nickg, gthomas
+// Date:         1998-09-11
+// Purpose:      HAL Support for Kernel Diagnostic Routines
+// Description:  Diagnostic routines for use during kernel development.
+// Usage:        #include <cyg/hal/hal_diag.h>
+//
 //####DESCRIPTIONEND####
 //
-//=============================================================================
+//===========================================================================*/
 
 #include <pkgconf/hal.h>
-#include <pkgconf/hal_arm_pid.h>
 
-#ifdef CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
+#include <cyg/infra/cyg_type.h>
+#include <cyg/hal/hal_if.h>
 
-#include <cyg/infra/cyg_type.h>         // CYG_UNUSED_PARAM
+/*---------------------------------------------------------------------------*/
 
-#include <cyg/hal/arm_stub.h>           // architecture stub support
+#if defined(CYGSEM_HAL_VIRTUAL_VECTOR_DIAG)
 
-//----------------------------------------------------------------------------
-// Define some platform specific communication details. This is mostly
-// handled by hal_if now, but we need to make sure the comms tables are
-// properly initialized.
+#include <cyg/hal/hal_if.h>
 
-externC void cyg_hal_plf_comms_init(void);
+#define HAL_DIAG_INIT()          hal_if_diag_init()
+#define HAL_DIAG_WRITE_CHAR(_c_) hal_if_diag_write_char(_c_)
+#define HAL_DIAG_READ_CHAR(_c_)  hal_if_diag_read_char(&_c_)
 
-#define HAL_STUB_PLATFORM_INIT_SERIAL()       cyg_hal_plf_comms_init()
+#else
 
-#define HAL_STUB_PLATFORM_SET_BAUD_RATE(baud) CYG_UNUSED_PARAM(int, (baud))
-#define HAL_STUB_PLATFORM_INTERRUPTIBLE       0
-#define HAL_STUB_PLATFORM_INIT_BREAK_IRQ()    CYG_EMPTY_STATEMENT
+/*---------------------------------------------------------------------------*/
+/* functions implemented in hal_diag.c                                       */
 
-//----------------------------------------------------------------------------
-// Stub initializer.
-#define HAL_STUB_PLATFORM_INIT()              CYG_EMPTY_STATEMENT
+externC void hal_diag_init(void);
+externC void hal_diag_write_char(char c);
+externC void hal_diag_read_char(char *c);
 
-#endif // ifdef CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
+#define HAL_DIAG_INIT()          hal_diag_init()
+#define HAL_DIAG_WRITE_CHAR(_c_) hal_diag_write_char(_c_)
+#define HAL_DIAG_READ_CHAR(_c_)  hal_diag_read_char(&_c_)
 
-//----------------------------------------------------------------------------
-// Reset.
+#endif
 
-#define HAL_STUB_PLATFORM_RESET() CYG_EMPTY_STATEMENT
-
-#define HAL_STUB_PLATFORM_RESET_ENTRY 0x4000000
-
-//-----------------------------------------------------------------------------
-#endif // CYGONCE_HAL_PLF_STUB_H
-// End of plf_stub.h
+/*---------------------------------------------------------------------------*/
+/* end of hal_diag.h                                                         */
+#endif /* CYGONCE_HAL_DIAG_H */
