@@ -1,41 +1,10 @@
-2000-12-07  Jesper Skov  <jskov@redhat.com>
-
-	* src/flash.h: Addresses and sizes are also affected by
-	interleaving.
-	* src/flash_erase_block.c: Plug in working loop.
-	* src/flash_program_buf.c: Same.
-
-2000-12-06  Jesper Skov  <jskov@redhat.com>
-
-	* src/am29f040b_flash.c (flash_hwr_init): Use new query semantics.
-	* src/flash_query.c (flash_query): Changed accordingly.
-
-	* src/flash.h (FLASH_Sector_Erase_Timer): Added.
-
-	* src/flash_erase_block.c: Do not check error flag after operation
-	completes.
-	* src/flash_program_buf.c: Same.
-
-2000-12-05  Jonathan Larmour  <jlarmour@redhat.com>
-
-	* src/am29f040b_flash.c (flash_code_overlaps): Define stext/etext
-	as array types so no assumptions can be made by the compiler about
-	location.
-
-2000-12-05  Jesper Skov  <jskov@redhat.com>
-
-	* Cloned from MBX driver.
-
-2000-10-20  Gary Thomas  <gthomas@redhat.com>
-
-	* src/mbx_flash.c: 
-	* src/flash_query.c: 
-	* src/flash_program_buf.c: 
-	* src/flash_erase_block.c: 
-	* src/flash.h: 
-	* cdl/flash_mbx.cdl: New package/file(s).
-
-//===========================================================================
+//==========================================================================
+//
+//        dl.c
+//
+//        ARM PID7 eval board FLASH program tool
+//
+//==========================================================================
 //####COPYRIGHTBEGIN####
 //                                                                          
 // -------------------------------------------                              
@@ -59,4 +28,54 @@
 // -------------------------------------------                              
 //                                                                          
 //####COPYRIGHTEND####
-//===========================================================================
+//==========================================================================
+//#####DESCRIPTIONBEGIN####
+//
+// Author(s):     gthomas
+// Contributors:  gthomas
+// Date:          1998-11-18
+// Description:   Tool used for simple handshake downloads.
+//####DESCRIPTIONEND####
+
+#include <stdio.h>
+
+#define SYNC_COUNT 63
+
+int
+main(int argc, char *argv[])
+{
+    int c, count, j;
+    char cout, cin;
+    FILE *in, *log;
+    if ((in = fopen(argv[1], "r")) == (FILE *)NULL) {
+        fprintf(stderr, "Can't open '%s'\n", argv[1]);
+        exit(1);
+    }
+    if ((log = fopen("/tmp/dl.log", "w")) == (FILE *)NULL) {
+        fprintf(stderr, "Can't open log file\n");
+        exit(1);
+    }
+    fprintf(stderr, "Downloading '%s'\n", argv[1]);
+    count = 0; j = 0;
+    write(1, ">", 1);  // Magic start
+    while ((c = fgetc(in)) != EOF) {
+        cout = c;
+        write(1, &cout, 1);
+        if (++j == SYNC_COUNT) {
+            read(0, &cin, 1);
+            if (cin != cout) {
+                fprintf(stderr, "Sync problem - in: %x, out: %x, byte: %x\n", cin, cout, count);
+                fprintf(log, "Sync problem - in: %x, out: %x, byte: %x\n", cin, cout, count);
+                fflush(log);
+                break;
+            }
+            j = 0;
+        }
+        count++;
+        if ((count % 256) == 255) fprintf(stderr, "%08X\n", count);
+    }
+    sleep(2);
+    write(1, ":", 1);
+    fclose(log);
+    exit(0);
+}

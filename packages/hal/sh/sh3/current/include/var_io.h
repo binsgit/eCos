@@ -1,12 +1,13 @@
-#ifndef CYGONCE_DEVS_FLASH_MIPS_OCELOT_H
-#define CYGONCE_DEVS_FLASH_MIPS_OCELOT_H
-//==========================================================================
+#ifndef CYGONCE_VAR_IO_H
+#define CYGONCE_VAR_IO_H
+
+//=============================================================================
 //
-//      devs_flash_mips_qed_ocelot.inl
+//      var_io.h
 //
-//      Ocelot flash information
+//      Variant specific IO support
 //
-//==========================================================================
+//=============================================================================
 //####COPYRIGHTBEGIN####
 //                                                                          
 // -------------------------------------------                              
@@ -25,26 +26,27 @@
 //                                                                          
 // The Initial Developer of the Original Code is Red Hat.                   
 // Portions created by Red Hat are                                          
-// Copyright (C) 1998, 1999, 2000 Red Hat, Inc.                             
+// Copyright (C) 1998, 1999, 2000, 2001 Red Hat, Inc.
 // All Rights Reserved.                                                     
 // -------------------------------------------                              
 //                                                                          
 //####COPYRIGHTEND####
-//==========================================================================
+//=============================================================================
 //#####DESCRIPTIONBEGIN####
 //
-// Author(s):    jskov
+// Author(s):    jskov 
 // Contributors: jskov
-// Date:         2000-12-05
-// Purpose:      
-// Description:  
-//              
+// Date:         2001-05-29
+// Purpose:      IO support macros
+// Description: 
+// Usage:        #include <cyg/hal/var_io.h>
+//
 //####DESCRIPTIONEND####
 //
-//==========================================================================
+//=============================================================================
 
-#define CYGHWR_FLASH_INTERLEAVE 1
-#define CYGHWR_FLASH_SERIES     1
-#define CYGHWR_FLASH_BASE       0xbfc00000
+#include <cyg/hal/plf_io.h>
 
-#endif  // CYGONCE_DEVS_FLASH_MIPS_OCELOT_H
+//-----------------------------------------------------------------------------
+// end of var_io.h
+#endif // CYGONCE_VAR_IO_H

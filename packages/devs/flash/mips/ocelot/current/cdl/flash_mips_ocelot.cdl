@@ -1,13 +1,10 @@
-#ifndef CYGONCE_DEVS_PLF_FLASH_INC
-#define CYGONCE_DEVS_PLF_FLASH_INC
-
-##=============================================================================
-##
-##	plf_flash.inc
-##
-##	MIPS assembler header file
-##
-##=============================================================================
+# ====================================================================
+#
+#      flash_mips_ocelot.cdl
+#
+#      FLASH memory - Hardware support for PMC-Sierra Ocelot board
+#
+# ====================================================================
 #####COPYRIGHTBEGIN####
 #                                                                          
 # -------------------------------------------                              
@@ -26,40 +23,38 @@
 #                                                                          
 # The Initial Developer of the Original Code is Red Hat.                   
 # Portions created by Red Hat are                                          
-# Copyright (C) 1998, 1999, 2000 Red Hat, Inc.                             
+# Copyright (C) 1998, 1999, 2000, 2001 Red Hat, Inc.
 # All Rights Reserved.                                                     
 # -------------------------------------------                              
 #                                                                          
 #####COPYRIGHTEND####
-##=============================================================================
-#######DESCRIPTIONBEGIN####
-##
-## Author(s): 	jskov
-## Contributors:jskov
-## Date:	2000-12-05
-## Purpose:	MIPS definitions.
-## Description:	This file contains various definitions and macros that are
-##              useful for writing assembly code for the MIPS CPU family.
-## Usage:
-##		#include <cyg/hal/plf_flash.inc>
-##		...
-##		
-##
-######DESCRIPTIONEND####
-##
-##=============================================================================
+# ====================================================================
+######DESCRIPTIONBEGIN####
+#
+# Author(s):      jskov
+# Contributors:   jskov
+# Date:           2000-12-05
+#
+#####DESCRIPTIONEND####
+#
+# ====================================================================
 
-#define FUNC_START(name)	\
-        .type name,@function;	\
-        .globl name;		\
-        .ent   name;		\
-name:
+cdl_package CYGPKG_DEVS_FLASH_MIPS_OCELOT {
+    display       "Flash memory support for PMC-Sierra Ocelot board"
 
-#define FUNC_END(name)		\
-        .globl name;		\
-name:
+    parent        CYGPKG_IO_FLASH
+    active_if     CYGPKG_IO_FLASH
+    requires      CYGPKG_HAL_MIPS_RM7000_OCELOT
 
+    implements    CYGHWR_IO_FLASH_DEVICE
 
-#------------------------------------------------------------------------------
-#endif // ifndef CYGONCE_DEVS_PLF_FLASH_INC
-# end of plf_flash.inc
+    compile       mips_ocelot_flash.c
+
+    # Arguably this should do in the generic package
+    # but then there is a logic loop so you can never enable it.
+    cdl_interface CYGINT_DEVS_FLASH_AMD_AM29XXXXX_REQUIRED {
+        display   "AMD AM29F040B driver required"
+    }
+
+    implements    CYGINT_DEVS_FLASH_AMD_AM29XXXXX_REQUIRED
+}

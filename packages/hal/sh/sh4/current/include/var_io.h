@@ -1,10 +1,13 @@
-//==========================================================================
+#ifndef CYGONCE_VAR_IO_H
+#define CYGONCE_VAR_IO_H
+
+//=============================================================================
 //
-//      flash_query.c
+//      var_io.h
 //
-//      Flash programming - query device
+//      Variant specific IO support
 //
-//==========================================================================
+//=============================================================================
 //####COPYRIGHTBEGIN####
 //                                                                          
 // -------------------------------------------                              
@@ -23,58 +26,27 @@
 //                                                                          
 // The Initial Developer of the Original Code is Red Hat.                   
 // Portions created by Red Hat are                                          
-// Copyright (C) 1998, 1999, 2000 Red Hat, Inc.                             
+// Copyright (C) 1998, 1999, 2000, 2001 Red Hat, Inc.
 // All Rights Reserved.                                                     
 // -------------------------------------------                              
 //                                                                          
 //####COPYRIGHTEND####
-//==========================================================================
+//=============================================================================
 //#####DESCRIPTIONBEGIN####
 //
-// Author(s):    gthomas
-// Contributors: gthomas
-// Date:         2000-10-20
-// Purpose:      
-// Description:  
-//              
+// Author(s):    jskov 
+// Contributors: jskov
+// Date:         2001-05-29
+// Purpose:      IO support macros
+// Description: 
+// Usage:        #include <cyg/hal/var_io.h>
+//
 //####DESCRIPTIONEND####
 //
-//==========================================================================
+//=============================================================================
 
-#include "flash.h"
+#include <cyg/hal/plf_io.h>
 
-#include <pkgconf/hal.h>
-#include <cyg/hal/hal_arch.h>
-#include <cyg/hal/hal_cache.h>
-#include CYGHWR_MEMORY_LAYOUT_H
-
-//
-// CAUTION!  This code must be copied to RAM before execution.  Therefore,
-// it must not contain any code which might be position dependent!
-//
-
-// Only reads the manufacturer and part number codes for the first
-// device(s) in series. It is assumed that any devices in series
-// will be of the same type.
-
-void
-flash_query(void* data)
-{
-    volatile flash_data_t *ROM;
-    flash_data_t* id = (flash_data_t*) data;
-
-    ROM = (volatile flash_data_t*) CYGHWR_FLASH_BASE;
-
-    FLASH_CMD_WRITE(ROM+FLASH_Setup_Addr1, FLASH_Setup_Code1);
-    FLASH_CMD_WRITE(ROM+FLASH_Setup_Addr2, FLASH_Setup_Code2);
-    FLASH_CMD_WRITE(ROM+FLASH_Setup_Addr1, FLASH_Read_ID);
-
-    // Manufacturers' code
-    FLASH_DATA_READ(ROM, id);
-    // Part number
-    FLASH_DATA_READ(ROM+CYGHWR_FLASH_INTERLEAVE, &id[CYGHWR_FLASH_INTERLEAVE]);
-
-    FLASH_CMD_WRITE(ROM, FLASH_Reset);
-
-    return id;
-}
+//-----------------------------------------------------------------------------
+// end of var_io.h
+#endif // CYGONCE_VAR_IO_H
