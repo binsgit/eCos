@@ -1,24 +1,10 @@
-2001-07-13  Gary Thomas  <gthomas@redhat.com>
+2001-07-06  Jesper Skov  <jskov@redhat.com>
 
-	* src/ipaq_pcmcia.c (cf_hwr_change_state): Use VERS_1 instead of
-	MANID since some cards don't seem to support that.
+	* src/ds12887.cxx (get_ds_hwclock): Instead of locking while
+	reading (which prevents updates if polled), disable interrupts.
 
-2001-03-14  Gary Thomas  <gthomas@redhat.com>
-
-	* src/ipaq_pcmcia.c (cf_hwr_init): Leave GPIO/timing setup to HAL code.
-
-2001-03-01  Gary Thomas  <gthomas@redhat.com>
-
-	* src/ipaq_pcmcia.c (cf_hwr_init): Remove [illegal] delay which caused
-	this code to be unreliable when run in non-ROM mode.
-
-2001-02-24  Gary Thomas  <gthomas@redhat.com>
-
-	* src/ipaq_pcmcia.c:
-	* cdl/pcmcia_ipaq.cdl: New file(s) - initial import of
-	iPAQ support, contributed by Richard Panton, 3G Labs.
-
-//===========================================================================
+	* New package, based on 1742 driver.
+	
 //####COPYRIGHTBEGIN####
 //                                                                          
 // -------------------------------------------                              
@@ -37,9 +23,10 @@
 //                                                                          
 // The Initial Developer of the Original Code is Red Hat.                   
 // Portions created by Red Hat are                                          
-// Copyright (C) 1998, 1999, 2000, 2001 Red Hat, Inc.                             
+// Copyright (C) 1998, 1999, 2000, 2001 Red Hat, Inc.
 // All Rights Reserved.                                                     
 // -------------------------------------------                              
 //                                                                          
 //####COPYRIGHTEND####
-//===========================================================================
+
+
