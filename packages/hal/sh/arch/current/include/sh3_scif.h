@@ -1,8 +1,8 @@
 //=============================================================================
 //
-//      hal_aux.c
+//      sh3_scif.h
 //
-//      HAL auxiliary objects and code; per platform
+//      Simple driver for the SH3 Serial Communication Interface with FIFO
 //
 //=============================================================================
 //####COPYRIGHTBEGIN####
@@ -31,34 +31,58 @@
 //=============================================================================
 //#####DESCRIPTIONBEGIN####
 //
-// Author(s):   hmt
-// Contributors:hmt
-// Date:        1999-06-08
-// Purpose:     HAL aux objects: startup tables.
-// Description: Tables for per-platform initialization
+// Author(s):   jskov
+// Contributors:jskov
+// Date:        2000-03-30
+// Description: Simple driver for the SH Serial Communication Interface
+//              The driver can be used for either the SCIF or the IRDA
+//              modules (the latter can act as the former).
+//              Clients of this file can configure the behavior with:
+//              CYGNUM_SCIF_PORTS: number of SCI ports
+//
+// Note:        It should be possible to configure a channel to IRDA mode.
+//              Worry about that when some board needs it.
 //
 //####DESCRIPTIONEND####
 //
 //=============================================================================
 
 #include <pkgconf/hal.h>
-#include <cyg/hal/hal_mem.h>            // HAL memory definitions
 
-// The memory map is weakly defined, allowing the application to redefine
-// it if necessary. The regions defined below are the minimum requirements.
-CYGARC_MEMDESC_TABLE CYGBLD_ATTRIB_WEAK = {
-    // Mapping for the simulator. This is only used for special debugging:
-    // CYG_MSR in vectors.S must be changed to enable the MMU.
-    CYGARC_MEMDESC_CACHE(   0x00000000, 0x00800000 ), // Main memory
-    CYGARC_MEMDESC_NOCACHE( 0xf0000000, 0x00020000 ), // diag registers
+#ifdef CYGNUM_HAL_SH_SH3_SCIF_PORTS
 
-    CYGARC_MEMDESC_TABLE_END
-};
+//--------------------------------------------------------------------------
+// SCIF register offsets
+#define _REG_SCSMR  0x00
+#define _REG_SCBRR  0x02
+#define _REG_SCSCR  0x04
+#define _REG_SCFTDR 0x06
+#define _REG_SCSSR  0x08
+#define _REG_SCFRDR 0x0a
+#define _REG_SCFCR  0x0c
+#define _REG_SCFDR  0x0e
 
+//--------------------------------------------------------------------------
+
+typedef struct {
+    cyg_uint8* base;
+    cyg_int32 msec_timeout;
+    int isr_vector;
+} channel_data_t;
+
+//--------------------------------------------------------------------------
+
+#if !defined(CYGSEM_HAL_VIRTUAL_VECTOR_DIAG)
+// This one should only be used by old-stub compatibility code!
+externC void cyg_hal_plf_scif_init_channel(const channel_data_t* chan);
+#endif
+
+externC cyg_uint8 cyg_hal_plf_scif_getc(void* __ch_data);
+externC void cyg_hal_plf_scif_putc(void* __ch_data, cyg_uint8 c);
+void cyg_hal_plf_scif_init(int scif_index, int comm_index, 
+                           int rcv_vect, cyg_uint8* base);
+
+
+#endif // CYGNUM_HAL_SH_SH3_SCIF_PORTS
 //-----------------------------------------------------------------------------
-void
-hal_platform_init(void)
-{
-}
-
-// EOF hal_aux.c
+// end of sh3_scif.h

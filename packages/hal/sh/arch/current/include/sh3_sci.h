@@ -1,8 +1,8 @@
 //=============================================================================
 //
-//      hal_aux.c
+//      sh3_sci.h
 //
-//      HAL auxiliary objects and code; per platform
+//      Simple driver for the SH Serial Communication Interface (SCI)
 //
 //=============================================================================
 //####COPYRIGHTBEGIN####
@@ -31,34 +31,51 @@
 //=============================================================================
 //#####DESCRIPTIONBEGIN####
 //
-// Author(s):   hmt
-// Contributors:hmt
-// Date:        1999-06-08
-// Purpose:     HAL aux objects: startup tables.
-// Description: Tables for per-platform initialization
+// Author(s):   jskov
+// Contributors:jskov
+// Date:        1999-05-17
 //
 //####DESCRIPTIONEND####
 //
 //=============================================================================
 
 #include <pkgconf/hal.h>
-#include <cyg/hal/hal_mem.h>            // HAL memory definitions
 
-// The memory map is weakly defined, allowing the application to redefine
-// it if necessary. The regions defined below are the minimum requirements.
-CYGARC_MEMDESC_TABLE CYGBLD_ATTRIB_WEAK = {
-    // Mapping for the simulator. This is only used for special debugging:
-    // CYG_MSR in vectors.S must be changed to enable the MMU.
-    CYGARC_MEMDESC_CACHE(   0x00000000, 0x00800000 ), // Main memory
-    CYGARC_MEMDESC_NOCACHE( 0xf0000000, 0x00020000 ), // diag registers
+#ifdef CYGNUM_HAL_SH_SH3_SCI_PORTS
 
-    CYGARC_MEMDESC_TABLE_END
-};
+//--------------------------------------------------------------------------
+// SCI register offsets
+#ifdef CYGARC_SH_MOD_SCI_V2
+# define _REG_SCSPTR             -0x4 // serial port register
+#endif
+#define _REG_SCSMR                0x0 // serial mode register
+#define _REG_SCBRR                0x2 // bit rate register
+#define _REG_SCSCR                0x4 // serial control register
+#define _REG_SCTDR                0x6 // transmit data register
+#define _REG_SCSSR                0x8 // serial status register
+#define _REG_SCRDR                0xa // receive data register
 
+//--------------------------------------------------------------------------
+
+typedef struct {
+    cyg_uint8* base;
+    cyg_int32 msec_timeout;
+    int isr_vector;
+} channel_data_t;
+
+//--------------------------------------------------------------------------
+
+#if !defined(CYGSEM_HAL_VIRTUAL_VECTOR_DIAG)
+// This one should only be used by old-stub compatibility code!
+externC void cyg_hal_plf_sci_init_channel(const channel_data_t* chan);
+#endif
+
+externC cyg_uint8 cyg_hal_plf_sci_getc(void* __ch_data);
+externC void cyg_hal_plf_sci_putc(void* __ch_data, cyg_uint8 c);
+externC void cyg_hal_plf_sci_init(int sci_index, int comm_index, 
+                                  int rcv_vect, cyg_uint8* base);
+
+
+#endif // CYGNUM_HAL_SH_SH3_SCI_PORTS
 //-----------------------------------------------------------------------------
-void
-hal_platform_init(void)
-{
-}
-
-// EOF hal_aux.c
+// end of sh3_sci.h
